@@ -6,7 +6,7 @@
     <artifactId>confluence-slacknotifier-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>atlassian-plugin</packaging>
-    <description>Provides a simple but elegant way to notify Slack channels for specific events on pages for a selection of space keys. </description>
+    <description>Provides a simple but elegant way to notify Slack channels for events on pages for a selection of space keys.</description>
     <name>Confluence Slack Plugin</name>
     <organization>
         <name>Mdlware</name>
