@@ -1,0 +1,211 @@
+<html>
+<head>
+    <title>$action.getText("slack.config.title")</title>
+</head>
+<body>
+    #htmlSafe()
+    #parse ( "/template/includes/actionmessages.vm" )
+    #parse ( "/template/includes/actionerrors.vm" )
+
+<style type="text/css">
+    div.content {
+        margin: 0 0 0 20px;
+        font-size: 15px;
+    }
+
+    .content .slack-header {
+        margin-bottom: 20px;
+        height: 85px;
+    }
+
+    .content .slack-container {
+        float: left;
+        margin: 15px 0 15px 0;
+    }
+
+    .content .description {
+        float: left;
+        width: 400px;
+        font-size: 18px;
+        padding: 10px 0 0 10px;
+        margin: auto 0 auto 0;
+        margin-left: 120px;
+        font-family: Helvetica, Arial, sans-serif;
+        color: #474747;
+    }
+
+    .content .description a:link,
+    .content .description a:active {
+        color: #0072bc;
+        text-decoration: none;
+    }
+
+    .content .description a:visited {
+        color: #0072bc;
+        text-decoration: none;
+    }
+
+    .content .description a:hover {
+        color: #000;
+    }
+
+    .content .slack-logo {
+        float: left;
+        width: 78px;
+        height: 85px;
+        padding-right: 10px;
+        background: #FFF url('https://d2ph5hv9wbwvla.cloudfront.net/images/slack_icon_medium.png') no-repeat;
+        background-size: 78px 85px;
+        background-repeat: no-repeat;
+    }
+
+    .content .header {
+        float: left;
+        padding: 0 14px 0 19px;
+        font-size: 17px !important;
+        font-family: Helvetica, Arial, sans-serif !important;
+        font-weight: bold !important;
+        line-height: 40px;
+    }
+
+    .content .item {
+        float: left;
+        padding: 14px 14px 14px 19px;
+        border: 1px solid #d4d4d4;
+        font-size: 15px;
+        font-family: Helvetica, Arial, sans-serif;
+        background-color: #F0F0F0;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        -moz-box-shadow: inset 0 0 10px #FFF;
+        -webkit-box-shadow: inset 0 0 10px #FFF;
+        box-shadow: inset 0 0 10px #FFF;
+        text-shadow: 0 1px 0px #FFF;
+    }
+
+    .content .item-wrapper, .content .header-wrapper {
+        float: left;
+        clear: both;
+        margin: 0 0 10px 0;
+        padding: 0;
+        font-size: 15px;
+    }
+
+    .content .item-wrapper {
+        -moz-box-shadow: 0 0 5px #e2e2e2;
+        -webkit-box-shadow: 0 0 5px #e2e2e2;
+        box-shadow: 0 0 5px #e2e2e2;
+    }
+
+    .content .item:hover {
+        background-color: #F1F1F1;
+        border: 3px solid rgba(42, 169, 230, 0.3);
+        padding: 12px 12px 12px 17px;
+    }
+
+    .content .column-left {
+        float: left;
+        width: 200px;
+        margin: auto 0 auto 0;
+        padding-right: 20px;
+        border-right: 1px solid #FFF;
+    }
+
+    .content .column-left p {
+        margin: 0 0 0 0;
+        font-size: 13px;
+        line-height: 20px;
+        color: #474747;
+    }
+
+    .content .column-right {
+        float: left;
+        height: 100%;
+        line-height: 40px;
+        padding-left: 20px;
+    }
+
+    .content .item .column-right {
+        border-left: 1px solid #e2e2e2;
+    }
+
+    .content .column-right .apikey {
+        background: #FFF url('https://d2ph5hv9wbwvla.cloudfront.net/images/bullet_key.png') no-repeat 98% 50%;
+        padding: 3px 25px 3px 3px;
+        line-height: 20px;
+        font-size: 12px;
+        font-family: "Lucida Console", "Verdana", "Arial", sans-serif;
+        color: #474747;
+        border: 2px solid #d4d4d4;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+    }
+
+    .content .column-right .apikey:focus {
+        color: #000;
+        background-color: #FFFDCC;
+    }
+
+    .content .slack-container img.tick {
+        height: 16px;
+        width: 16px;
+        padding: 0;
+        margin: 0 0 -3px 10px !important;
+    }
+</style>
+
+<div class="content">
+    <div class="slack-header">
+        <span class="slack-logo"/>
+    <span class="description">
+        $action.getText("slack.config.introtext")
+    </span>
+    </div>
+
+    <div style="clear: both"/>
+
+
+    #if ($slackConnectionDataList.size() > 0)
+        <div class="slack-container">
+            <form action="save.action" method="post">
+                #form_xsrfToken()
+
+                <div class="header-wrapper header">
+                    <div class="header">
+                        <div class="column-left">Space</div>
+                        <div class="column-right">Slack API Token</div>
+                        <div class="column-right">Slack Channel Name</div>
+                    </div>
+                </div>
+
+                #foreach ($slackConnectionDataElement in $slackConnectionDataList)
+                    <div class="item-wrapper">
+                        <div class="item">
+                            <div class="column-left">
+                                $slackConnectionDataElement.space.name
+                                <input type="hidden" name="spaceKeys"
+                                       value="$slackConnectionDataElement.spaceKey"/>
+                            </div>
+                            <div class="column-right">
+                                <input type="text" size=100 name="apiKeys" class="apikey"
+                                       value="$!generalUtil.escapeForJavascript($slackConnectionDataElement.apiKey)"/>
+                            </div>
+                            <div class="column-right">
+                                <input type="text" size=100 name="slackChannels" class="slackChannel"
+                                       value="$!generalUtil.escapeForJavascript($slackConnectionDataElement.slackChannel)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="clear: both"/>
+                #end
+            </form>
+            <input type="submit" class="spaced" value="$action.getText("slack.config.save")"/>
+        </div>
+    #else
+        <p>$action.getText("slack.config.no.spaces")</p>
+    #end
+</div>
+</body>
+</html>

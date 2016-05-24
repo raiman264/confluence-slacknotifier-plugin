@@ -1,0 +1,39 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="configure.url">/admin/plugins/slack/configurePlugin.action</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="confluence-slacknotifier-plugin"/>
+
+    <xwork name="Configure Slack integration" key="configureSlack">
+        <description key="slack.config.description">
+            Configure this plugin to integrate your Confluence with Slack.
+        </description>
+        <package name="slack" extends="default" namespace="/admin/plugins/slack">
+            <default-interceptor-ref name="defaultStack"/>
+            <action name="configurePlugin" method="input" class="nl.mdlware.confluence.plugins.slacknotifier.config.ConfigureSlackAction">
+                <result name="input" type="velocity">/templates/slack/config/configure-slack.vm</result>
+            </action>
+            <action name="save" method="save" class="nl.mdlware.confluence.plugins.slacknotifier.config.ConfigureSlackAction">
+                <result name="error" type="redirect">configurePlugin.action</result>
+                <result name="success" type="redirect">configurePlugin.action</result>
+            </action>
+        </package>
+    </xwork>
+
+    <web-item key="configure-slack-menu" name="Slack Configuration" section="system.admin/configuration" weight="1002">
+        <description key="slack.config.title">Slack integration</description>
+        <label key="slack.config.title"/>
+        <link linkId="slack-configuration">/admin/plugins/slack/configurePlugin.action</link>
+        <condition class="com.atlassian.confluence.plugin.descriptor.web.conditions.ConfluenceAdministratorCondition"/>
+    </web-item>
+
+    <component name="Slack Change Listener" class="nl.mdlware.confluence.plugins.slacknotifier.SlackNotifier" key="changeListener"/>
+    <component name="SlackSessionFactoryWrapper" class="nl.mdlware.confluence.plugins.slacknotifier.SlackSessionFactoryWrapper" key="slackSessionFactoryWrapper"/>
+    <component name="Slack Configuration Manager" class="nl.mdlware.confluence.plugins.slacknotifier.config.SlackConfigurationManager" key="slackConfigurationManager"/>
+
+</atlassian-plugin>
