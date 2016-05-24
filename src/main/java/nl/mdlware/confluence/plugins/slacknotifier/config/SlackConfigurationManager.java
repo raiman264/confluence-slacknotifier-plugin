@@ -12,21 +12,15 @@ import java.util.Properties;
 
 public class SlackConfigurationManager {
 	public static final String SLACK_API_KEYS = "ext.slack.api.keys";
-	
-	private BandanaManager bandanaManager;
+
+    private ConfluenceBandanaContext bandanaContext;
+    private BandanaManager bandanaManager;
 	private SpaceManager spaceManager;
-	
-	public SlackConfigurationManager() {
+    private Properties propertyStorage;
+
+    public SlackConfigurationManager() {
 	}
 	
-	/**
-	 * Returns a Slack ApiKeyPair for each Space in the system.
-	 * 
-	 * {@link SlackConnectionData#getApiKey()} might be null, if it hasn't been
-	 * configured for the given space..
-	 * 
-	 * @return
-	 */
 	public List<SlackConnectionData> getSlackConnectionDataList() {
 		List<SlackConnectionData> result = new ArrayList<SlackConnectionData>();
 		Properties props = this.readApiKeyPropertiesObj();
@@ -44,63 +38,54 @@ public class SlackConfigurationManager {
 		
 		return result;
 	}
-	
-	/**
-	 * Save listed ApiKeys.
-	 * 
-	 * @param slackConnectionDataList
-	 */
+
 	public void setSlackConnectionDataList(List<SlackConnectionData> slackConnectionDataList) {
-		Properties props = new Properties();
-		
+        propertyStorage.clear();
+
 		for (SlackConnectionData slackConnectionData : slackConnectionDataList) {
-			props.put(slackConnectionData.getSpaceKey(), slackConnectionData.getApiKey() + "," + slackConnectionData.getSlackChannel());
+			propertyStorage.put(slackConnectionData.getSpaceKey(), slackConnectionData.getApiKey() + "," + slackConnectionData.getSlackChannel());
 		}
 		
 		OutputStream out = new ByteArrayOutputStream();
 		try {
-			props.store(out, null);
-		} catch (IOException ioe) {} // seems unlikely to happen
+			propertyStorage.store(out, null);
+		} catch (IOException ioe) {
+            throw new RuntimeException(ioe.getMessage(), ioe);
+        }
 		
-		this.bandanaManager.setValue(new ConfluenceBandanaContext(),
-				SLACK_API_KEYS, out.toString());
+		this.bandanaManager.setValue(bandanaContext, SLACK_API_KEYS, out.toString());
 	}
-	
-	public String getApiKeyForSpace(Space space) {
-		List<SlackConnectionData> pairs = this.getSlackConnectionDataList();
-		for (SlackConnectionData pair : pairs) {
-			if (pair.getSpace() == space) {
-				return pair.getApiKey();
-			}
-		}
-		
-		return null;
-	}
-	
-	// Bean configuration
-	
-	public void setBandanaManager(BandanaManager manager) {
-		this.bandanaManager = manager;
-	}
-	
-	public void setSpaceManager(SpaceManager manager) {
-		this.spaceManager = manager;
-	}
-	
-	// Helpers
-	
+
 	private Properties readApiKeyPropertiesObj() {
-		ConfluenceBandanaContext context = new ConfluenceBandanaContext();
-		String propsString = (String)this.bandanaManager.getValue(context, SLACK_API_KEYS);
-		if (propsString == null) propsString = ""; // initially it doesn't exist
-		
-		Properties props = new Properties();
+        propertyStorage.clear();
+
+        String propsString = (String)this.bandanaManager.getValue(bandanaContext, SLACK_API_KEYS);
+		if (propsString == null) propsString = "";
+
 		InputStream in = new ByteArrayInputStream(propsString.getBytes());
-		
+
 		try {
-			props.load(in);
-		} catch (IOException ioe) {} // seems unlikely to happen
-		
-		return props;
+			propertyStorage.load(in);
+		} catch (IOException ioe) {
+            throw new RuntimeException(ioe.getMessage(), ioe);
+        }
+
+		return propertyStorage;
 	}
+
+    public void setBandanaManager(BandanaManager manager) {
+        this.bandanaManager = manager;
+    }
+
+    public void setSpaceManager(SpaceManager manager) {
+        this.spaceManager = manager;
+    }
+
+    public void setBandanaContext(ConfluenceBandanaContext bandanaContext) {
+        this.bandanaContext = bandanaContext;
+    }
+
+    public void setPropertyStorage(Properties propertyStorage) {
+        this.propertyStorage = propertyStorage;
+    }
 }

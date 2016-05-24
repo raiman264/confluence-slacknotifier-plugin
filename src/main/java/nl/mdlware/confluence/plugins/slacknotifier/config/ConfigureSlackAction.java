@@ -9,13 +9,10 @@ import java.util.List;
 public class ConfigureSlackAction extends ConfluenceActionSupport {
 	private static final long serialVersionUID = -5732284806136026379L;
 	
-	// Bean configured
 	private SlackConfigurationManager slackConfigurationManager;
 	
-	// For templates
 	private List<SlackConnectionData> slackConnectionDataList;
 	
-	// POST data
 	private String[] spaceKeys;
 	private String[] apiKeys;
     private String[] slackChannels;
@@ -44,7 +41,7 @@ public class ConfigureSlackAction extends ConfluenceActionSupport {
 
 	@Override
 	public boolean isPermitted() {
-		return true; // TODO PermissionManager.hasPermission(User,Permission,Object)
+		return true;
 	}
 	
 	public void setSlackConfigurationManager(SlackConfigurationManager manager) {
@@ -75,7 +72,6 @@ public class ConfigureSlackAction extends ConfluenceActionSupport {
 		this.slackConnectionDataList = this.slackConfigurationManager.getSlackConnectionDataList();
 	}
 
-	// Uses HTTP POST data to generate a list.
 	private List<SlackConnectionData> parseSlackConnectionData() {
 		List<SlackConnectionData> result = new ArrayList<SlackConnectionData>();
 		if (this.spaceKeys == null || this.apiKeys == null || this.slackChannels == null ||
