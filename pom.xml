@@ -97,20 +97,6 @@
                 <configuration>
                     <productVersion>${confluence.version}</productVersion>
                     <productDataVersion>${confluence.data.version}</productDataVersion>
-                    <!--
-                    <pluginDependencies>
-                        <pluginDependency>
-                            <groupId>com.github.Ullink</groupId>
-                            <artifactId>simple-slack-api</artifactId>
-                        </pluginDependency>
-                    </pluginDependencies>
-                    <instructions>
-                        <Import-Package>
-                            com.github.Ullink;version="0.5.1"
-                        </Import-Package>
-                        <CONF_COMM/>
-                    </instructions>
-                    -->
                 </configuration>
             </plugin>
         </plugins>
