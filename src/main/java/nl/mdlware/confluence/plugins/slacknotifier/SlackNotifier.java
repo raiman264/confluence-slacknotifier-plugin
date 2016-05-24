@@ -25,10 +25,6 @@ public class SlackNotifier implements DisposableBean {
     private SlackSessionFactoryWrapper slackSessionFactory;
     private SlackConfigurationManager slackConfigurationManager;
 
-//    private String slackChannel = "eduscrum";
-//    private String spaceKey = "EDU";
-//    private String slackBotAuthToken = "xoxb-44899160594-xpmNF8zXgPD7XHNcMVqeBf36";
-
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public SlackNotifier(EventPublisher eventPublisher, SlackSessionFactoryWrapper slackSessionFactory, SlackConfigurationManager slackConfigurationManager) {
