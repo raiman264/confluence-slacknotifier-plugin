@@ -1,5 +1,6 @@
 package nl.mdlware.confluence.plugins.slacknotifier.config;
 
+import com.atlassian.bandana.BandanaContext;
 import com.atlassian.bandana.BandanaManager;
 import com.atlassian.confluence.setup.bandana.ConfluenceBandanaContext;
 import com.atlassian.confluence.spaces.Space;
@@ -13,10 +14,11 @@ import java.util.Properties;
 public class SlackConfigurationManager {
 	public static final String SLACK_API_KEYS = "ext.slack.api.keys";
 
-    private ConfluenceBandanaContext bandanaContext;
     private BandanaManager bandanaManager;
-	private SpaceManager spaceManager;
-    private Properties propertyStorage;
+    private SpaceManager spaceManager;
+
+    private BandanaContext bandanaContext = new ConfluenceBandanaContext();
+    private Properties propertyStorage = new Properties();
 
     public SlackConfigurationManager() {
 	}
@@ -81,7 +83,7 @@ public class SlackConfigurationManager {
         this.spaceManager = manager;
     }
 
-    public void setBandanaContext(ConfluenceBandanaContext bandanaContext) {
+    public void setBandanaContext(BandanaContext bandanaContext) {
         this.bandanaContext = bandanaContext;
     }
 
